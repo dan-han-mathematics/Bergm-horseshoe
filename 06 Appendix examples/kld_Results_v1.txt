@@ -1,0 +1,40 @@
+
+# KLD between true coef and both BHSERGM and BERGM, then between BERGM and BHSERGM #
+# Used the faux.magnolia.high network with 8 network stats #
+
+> formula <- sim_net ~ edges + nodematch(~Grade) + gwesp(0.5,fixed = T) +  kstar(2) + 
+  gwdegree(0.5,fixed = T) + nodematch(~Sex) + nodematch(~Race) + triangle
+
+# True coef = c(-7,1.5,rep(0,dims-2)) ; True covariance = diag(1e-3,dims)
+
+# Ran 100 times with: main.iters = 1500 ; burn.in = 5000 ; aux = 1000 ; chains = 6
+                      p.mean = rep(0,dims) ; gamma = 0.35 ; V.prop = 0.00075
+
+# Overall results of Horseshoe model [zeta2 = c(1,1,rep(5e-4,dims-2)]:
+                          Post.Mean  Post.SD   Q_0.025    Q_0.25    Q_0.50    Q_0.75   Q_0.975
+theta1 (edges)           -7.0448732 0.036947 -7.117021 -7.066478 -7.043037 -7.025567 -6.979432
+theta2 (nodematch.Grade)  1.5089468 0.028211  1.456441  1.491086  1.506462  1.523843  1.569078
+theta3 (gwesp.fixed.0.5) -0.0421435 0.032219 -0.118777 -0.057707 -0.036278 -0.023316  0.009967
+theta4 (kstar2)          -0.0009566 0.004453 -0.009557 -0.003510 -0.001029  0.001387  0.008609
+theta5 (gwdeg.fixed.0.5)  0.0322709 0.019683  0.005522  0.019890  0.031313  0.039116  0.080636
+theta6 (nodematch.Sex)    0.0142554 0.012857 -0.007495  0.004866  0.012672  0.022696  0.040039
+theta7 (nodematch.Race)   0.0404730 0.014166  0.013416  0.032333  0.038941  0.048735  0.069185
+theta8 (triangle)        -0.0173344 0.030630 -0.071544 -0.031346 -0.015504  0.001473  0.030186
+
+# Overall results of Bergm model:
+                         Post.Mean  Post.SD    Q_0.025     Q_0.25    Q_0.50    Q_0.75   Q_0.975
+theta1 (edges)           -7.229632 0.073675 -7.3606674 -7.2764375 -7.231058 -7.172162 -7.100219
+theta2 (nodematch.Grade)  1.511832 0.023820  1.4704145  1.4936031  1.511867  1.526958  1.556690
+theta3 (gwesp.fixed.0.5) -0.539430 0.223098 -0.9330521 -0.7016617 -0.539132 -0.385900 -0.063140
+theta4 (kstar2)           0.015553 0.010278 -0.0010641  0.0078517  0.015178  0.022714  0.035118
+theta5 (gwdeg.fixed.0.5)  0.146723 0.049235  0.0583394  0.1128897  0.147985  0.179881  0.237015
+theta6 (nodematch.Sex)    0.035657 0.019028 -0.0051162  0.0251556  0.034977  0.048765  0.070662
+theta7 (nodematch.Race)   0.114222 0.023539  0.0701369  0.0991087  0.115872  0.132658  0.157224
+theta8 (triangle)        -0.162141 0.525938 -1.2659496 -0.5347950 -0.115729  0.187533  0.876969
+
+# KLD results:
+                  mean        sd Q_0.025  Q_0.25   Q_0.50   Q_0.75  Q_0.975
+true.vs.horse    8.508   0.74313  7.2834  8.0241   8.3913   8.8968  10.2388
+true.vs.bergm   14.848   0.47554 13.9926 14.5378  14.8043  15.1912  15.7883
+bergm.vs.horse 172.264 108.17601 37.5659 90.5060 152.8405 215.5527 485.8636
+horse.vs.bergm   4.654   0.75047  2.9590  4.2259   4.6464   5.1081   5.9706
